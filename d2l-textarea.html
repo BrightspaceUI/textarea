@@ -1,0 +1,377 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../d2l-colors/d2l-colors.html">
+<link rel="import" href="../d2l-text-input/d2l-text-input-shared-styles.html">
+
+<link rel="import" href="d2l-textarea-shared-styles.html">
+
+<!--
+`d2l-textarea` is an element containing a textarea that grows in height as more
+lines of input are entered. Unless an explicit height or the `maxRows` property is set, it will
+never scroll.
+
+Example:
+
+	<d2l-textarea></d2l-textarea>
+
+### Styling
+
+The following custom properties and mixins are available for styling:
+
+Custom property | Description | Default
+----------------|-------------|----------
+`--d2l-textarea` | Mixin applied to the textarea | `{}`
+`--d2l-textarea-placeholder` | Mixin applied to the textarea placeholder | `{}`
+
+@group Iron Elements
+@hero hero.svg
+@demo demo/index.html
+-->
+
+<dom-module id="d2l-textarea">
+	<template>
+		<style>
+			:host {
+				display: inline-block;
+				position: relative;
+				width: 100%;
+				padding: 0;
+				overflow: hidden;
+			}
+
+			.mirror-text {
+				visibility: hidden;
+				word-wrap: break-word;
+				box-sizing: border-box;
+
+				@apply --d2l-input;
+				@apply --d2l-textarea;
+			}
+
+			.fit {
+				position: absolute;
+				top: 0;
+				right: 0;
+				bottom: 0;
+				left: 0;
+			}
+
+			textarea {
+				position: relative;
+				outline: none;
+				border: none;
+				resize: none;
+				background: inherit;
+				color: inherit;
+				/* see comments in template */
+				width: 100%;
+				height: 100%;
+				font-size: inherit;
+				font-family: inherit;
+				line-height: inherit;
+				text-align: inherit;
+
+				@apply --d2l-input;
+				@apply --d2l-textarea;
+			}
+
+			textarea::placeholder {
+				@apply --d2l-input-placeholder;
+			}
+
+			textarea:hover,
+			textarea:focus,
+			textarea.d2l-text-input-focus {
+				@apply --d2l-input-hover;
+			}
+
+			textarea:hover:disabled {
+				@apply --d2l-input-disabled-hover;
+			}
+
+			textarea:disabled {
+				@apply --d2l-input-disabled;
+			}
+
+			textarea:invalid,
+			textarea[aria-invalid='true'] {
+				@apply --d2l-input-invalid;
+			}
+
+			:host([no-border]) textarea {
+				border: 1px solid transparent;
+				box-shadow: none;
+			}
+
+		</style>
+
+		<!-- the mirror sizes the input/textarea so it grows with typing -->
+		<!-- use &#160; instead &nbsp; of to allow this element to be used in XHTML -->
+		<div id="mirror" class="mirror-text" aria-hidden="true">&#160;</div>
+
+		<!-- size the input/textarea with a div, because the textarea has intrinsic size in ff -->
+		<div class="textarea-container fit">
+			<textarea id="textarea"
+				aria-invalid$="[[ariaInvalid]]"
+				aria-label$="[[ariaLabel]]"
+				aria-labelledby$="[[ariaLabelledby]]"
+				autocomplete$="[[autocomplete]]"
+				autofocus$="[[autofocus]]"
+				disabled$="[[disabled]]"
+				inputmode$="[[inputmode]]"
+				maxlength$="[[maxlength]]"
+				minlength$="[[minlength]]"
+				name$="[[name]]"
+				on-blur="_handleBlur"
+				on-focus="_handleFocus"
+				placeholder$="[[placeholder]]"
+				readonly$="[[readonly]]"
+				required$="[[required]]"
+				rows$="[[rows]]"
+				></textarea>
+		</div>
+	</template>
+</dom-module>
+
+<script>
+	Polymer({
+
+		is: 'd2l-textarea',
+
+		properties: {
+			/**
+			 * Gets or sets the [aria-invalid attribute](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques/Using_the_aria-invalid_attribute),
+			 * which is used to indicate that the value entered into the input field does not conform to the format expected.
+			 */
+			ariaInvalid: {
+				type: String
+			},
+			/**
+			 * Gets or sets the [aria-label](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques/Using_the_aria-label_attribute)
+			 * attribute, which defines a string label for the input.
+			 */
+			ariaLabel: {
+				type: String
+			},
+			/**
+			 * Gets or sets the [aria-labelledby attribute](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques/Using_the_aria-labelledby_attribute),
+			 * which contains the IDs of labels for the input.
+			 */
+			ariaLabelledby: {
+				type: String
+			},
+			/**
+			 * Bound to the textarea's `autocomplete` attribute.
+			 */
+			autocomplete: {type: String, value: 'off'},
+			/**
+			 * Bound to the textarea's `autofocus` attribute.
+			 */
+			autofocus: {type: Boolean, value: false},
+			/**
+			 * Bound to the textarea's `disabled` attribute.
+			 */
+			disabled: {type: Boolean},
+			/**
+			 * Bound to the textarea's `inputmode` attribute.
+			 */
+			inputmode: {type: String},
+			/**
+			 * The minimum length of the input value.
+			 */
+			minlength: {type: Number},
+			/**
+			 * The maximum length of the input value.
+			 */
+			maxlength: {type: Number},
+			/**
+			 * The maximum number of rows this element can grow to until it
+			 * scrolls. 0 means no maximum.
+			 *
+			 * @attribute maxRows
+			 * @type number
+			 * @default 0
+			 */
+			maxRows: {type: Number, value: 0, observer: '_updateCached'},
+			/**
+			 * Bound to the textarea's `name` attribute.
+			 */
+			name: {type: String},
+			/**
+			 * Removes border styling from the text area.
+			 */
+			noBorder: {type: Boolean, value: false},
+			/**
+			 * Bound to the textarea's `placeholder` attribute.
+			 */
+			placeholder: {type: String},
+			/**
+			 * Bound to the textarea's `readonly` attribute.
+			 */
+			readonly: {type: String},
+			/**
+			 * Set to true to mark the textarea as required.
+			 */
+			required: {type: Boolean},
+			/**
+			 * The initial number of rows.
+			 *
+			 * @attribute rows
+			 * @type number
+			 * @default 1
+			 */
+			rows: {type: Number, value: 1, observer: '_updateCached'},
+			/**
+			 * Value of the textarea
+			 * @type {string|number}
+			 */
+			value: {observer: '_valueChanged', type: String, notify: true},
+		},
+
+		listeners: {'input': '_onInput'},
+
+		/**
+		 * Returns the underlying textarea.
+		 * @return {!HTMLTextAreaElement}
+		 */
+		get textarea() {
+			return this.$.textarea;
+		},
+
+		/**
+		 * Returns textarea's selection start.
+		 * @return {number}
+		 */
+		get selectionStart() {
+			return this.$.textarea.selectionStart;
+		},
+
+		/**
+		 * Returns textarea's selection end.
+		 * @return {number}
+		 */
+		get selectionEnd() {
+			return this.$.textarea.selectionEnd;
+		},
+
+		/**
+		 * Sets the textarea's selection start.
+		 */
+		set selectionStart(value) {
+			this.$.textarea.selectionStart = value;
+		},
+
+		/**
+		 * Sets the textarea's selection end.
+		 */
+		set selectionEnd(value) {
+			this.$.textarea.selectionEnd = value;
+		},
+
+		attached: function() {
+			/* iOS has an arbitrary left margin of 3px that isn't present
+			 * in any other browser, and means that the paper-textarea's cursor
+			 * overlaps the label.
+			 * See https://github.com/PolymerElements/paper-input/issues/468.
+			 */
+			var IS_IOS = navigator.userAgent.match(/iP(?:[oa]d|hone)/);
+			if (IS_IOS) {
+				this.$.textarea.style.marginLeft = '-3px';
+			}
+		},
+
+		_valueChanged: function(value) {
+			var textarea = this.textarea;
+			if (!textarea) {
+				return;
+			}
+
+			// If the value changed manually, then we need to also update
+			// the underlying textarea's value. Otherwise this change was probably
+			// generated from the _onInput handler, and the two values are already
+			// the same.
+			if (textarea.value !== value) {
+				textarea.value = !(value || value === 0) ? '' : value;
+			}
+
+			this.$.mirror.innerHTML = this._valueForMirror();
+		},
+
+		_onInput: function(event) {
+			var eventPath = Polymer.dom(event).path;
+			this.value = eventPath ? eventPath[0].value : event.target.value;
+		},
+
+		_constrain: function(tokens) {
+			var _tokens;
+			tokens = tokens || [''];
+			// Enforce the min and max heights for a multiline input to avoid
+			// measurement
+			if (this.maxRows > 0 && tokens.length > this.maxRows) {
+				_tokens = tokens.slice(0, this.maxRows);
+			} else {
+				_tokens = tokens.slice(0);
+			}
+			while (this.rows > 0 && _tokens.length < this.rows) {
+				_tokens.push('');
+			}
+			// Use &#160; instead &nbsp; of to allow this element to be used in XHTML.
+			return _tokens.join('<br/>') + '&#160;';
+		},
+
+		_valueForMirror: function() {
+			var input = this.textarea;
+			if (!input) {
+				return;
+			}
+			this.tokens = (input && input.value) ? input.value.replace(/&/gm, '&amp;')
+				.replace(/"/gm, '&quot;')
+				.replace(/'/gm, '&#39;')
+				.replace(/</gm, '&lt;')
+				.replace(/>/gm, '&gt;')
+				.split('\n') :
+				[''];
+			return this._constrain(this.tokens);
+		},
+
+		_updateCached: function() {
+			this.$.mirror.innerHTML = this._constrain(this.tokens);
+		},
+
+		focus: function() {
+			this.textarea.focus();
+		},
+
+		_handleFocus: function() {
+			if (!Polymer.Element && !Polymer.Settings.useShadow) {
+				// This custom focus event is only needed for Polymer 1. We should
+				// be able to remove this event once we move to Polymer 2.
+				this.dispatchEvent(new CustomEvent(
+					'focus',
+					{bubbles: false}
+				));
+			}
+		},
+
+		_handleBlur: function() {
+			if (!Polymer.Element && !Polymer.Settings.useShadow) {
+				// This custom focus event is only needed for Polymer 1. We should
+				// be able to remove this event once we move to Polymer 2.
+				this.dispatchEvent(new CustomEvent(
+					'blur',
+					{bubbles: false}
+				));
+			}
+		}
+
+	});
+</script>
