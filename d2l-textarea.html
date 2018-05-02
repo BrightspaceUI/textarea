@@ -51,6 +51,8 @@ Custom property | Description | Default
 			.mirror-text {
 				visibility: hidden;
 				word-wrap: break-word;
+				overflow-wrap: break-word;
+				word-break: break-word;
 				box-sizing: border-box;
 
 				@apply --d2l-input;
@@ -107,8 +109,10 @@ Custom property | Description | Default
 				@apply --d2l-input-invalid;
 			}
 
-			:host([no-border]) textarea {
-				border: 1px solid transparent;
+			:host([no-border]) textarea,
+			:host([no-border]) .mirror-text {
+				border: none;
+				padding: 0;
 				box-shadow: none;
 			}
 
@@ -333,7 +337,9 @@ Custom property | Description | Default
 			if (!input) {
 				return;
 			}
-			this.tokens = (input && input.value) ? input.value.replace(/&/gm, '&amp;')
+			var value = input.value || this.placeholder;
+
+			this.tokens = (value) ? value.replace(/&/gm, '&amp;')
 				.replace(/"/gm, '&quot;')
 				.replace(/'/gm, '&#39;')
 				.replace(/</gm, '&lt;')
