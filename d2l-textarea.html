@@ -9,6 +9,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../d2l-fastdom-import/fastdom.html">
 <link rel="import" href="../d2l-colors/d2l-colors.html">
 <link rel="import" href="../d2l-text-input/d2l-text-input-shared-styles.html">
 
@@ -282,14 +283,18 @@ Custom property | Description | Default
 		 * Sets the textarea's selection start.
 		 */
 		set selectionStart(value) {
-			this.$.textarea.selectionStart = value;
+			fastdom.mutate(function() {
+				this.$.textarea.selectionStart = value;
+			}, this);
 		},
 
 		/**
 		 * Sets the textarea's selection end.
 		 */
 		set selectionEnd(value) {
-			this.$.textarea.selectionEnd = value;
+			fastdom.mutate(function() {
+				this.$.textarea.selectionEnd = value;
+			}, this);
 		},
 
 		attached: function() {
@@ -300,7 +305,9 @@ Custom property | Description | Default
 			 */
 			var IS_IOS = navigator.userAgent.match(/iP(?:[oa]d|hone)/);
 			if (IS_IOS) {
-				this.$.textarea.style.marginLeft = '-3px';
+				fastdom.mutate(function() {
+					this.$.textarea.style.marginLeft = '-3px';
+				}, this);
 			}
 		},
 
@@ -318,7 +325,9 @@ Custom property | Description | Default
 				textarea.value = !(value || value === 0) ? '' : value;
 			}
 
-			this.$.mirror.innerHTML = this._valueForMirror();
+			fastdom.mutate(function() {
+				this.$.mirror.innerHTML = this._valueForMirror();
+			}, this);
 		},
 
 		_onInput: function(event) {
@@ -361,7 +370,9 @@ Custom property | Description | Default
 		},
 
 		_updateCached: function() {
-			this.$.mirror.innerHTML = this._constrain(this.tokens);
+			fastdom.mutate(function() {
+				this.$.mirror.innerHTML = this._constrain(this.tokens);
+			}, this);
 		},
 
 		focus: function() {
