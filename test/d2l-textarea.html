@@ -82,7 +82,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 					var finalHeight = autogrow.offsetHeight;
 					assert.isTrue(finalHeight > initialHeight);
 					done();
-				})
+				});
 			});
 
 			test('removing rows shrinks the textarea', function(done) {
@@ -95,7 +95,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 						var finalHeight = autogrow.offsetHeight;
 						assert.isTrue(finalHeight < initialHeight);
 						done();
-					})
+					});
 				});
 			});
 
