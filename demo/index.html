@@ -139,6 +139,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 		</template>
 		</demo-snippet>
 
+		<script>
+			function handleTextAreaChange(e) {
+				document.getElementById('output').innerText = e.target.value;
+			}
+		</script>
+		<h3>d2l-textarea with change handler</h3>
+		<demo-snippet>
+		<template>
+			<d2l-textarea placeholder="Enter text and tab to see event result" rows="3" max-rows="3" onchange="handleTextAreaChange(event)"></d2l-textarea>
+			<div id="output">Event target.value will be shown here</div>
+		</template>
+		</demo-snippet>
 	</div>
 	</body>
 </html>

@@ -148,6 +148,7 @@ Custom property | Description | Default
 				minlength$="[[minlength]]"
 				name$="[[name]]"
 				on-blur="_handleBlur"
+				on-change="_handleChange"
 				on-focus="_handleFocus"
 				placeholder$="[[placeholder]]"
 				readonly$="[[readonly]]"
@@ -164,6 +165,13 @@ Custom property | Description | Default
 		is: 'd2l-textarea',
 
 		properties: {
+
+			/**
+			 * Fired when the input changes due to user interaction.
+			 *
+			 * @event change
+			*/
+
 			/**
 			 * Gets or sets the [aria-invalid attribute](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques/Using_the_aria-invalid_attribute),
 			 * which is used to indicate that the value entered into the input field does not conform to the format expected.
@@ -397,6 +405,16 @@ Custom property | Description | Default
 				this.dispatchEvent(new CustomEvent(
 					'blur',
 					{bubbles: false}
+				));
+			}
+		},
+
+		_handleChange: function() {
+			if (Polymer.Element && Polymer.Settings.useShadow) {
+				// Change events don't automatically propagate across shadow DOM boundaries
+				this.dispatchEvent(new CustomEvent(
+					'change',
+					{bubbles: true, composed: true}
 				));
 			}
 		}
