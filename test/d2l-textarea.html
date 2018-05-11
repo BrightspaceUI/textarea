@@ -46,6 +46,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 	<script>
 		suite('basic', function() {
+			var raf = window.requestAnimationFrame;
+
 			test('can set an initial value', function() {
 				var autogrow = fixture('has-value');
 				assert.equal(
@@ -76,26 +78,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 				var initialHeight = autogrow.offsetHeight;
 
 				autogrow.value = 'batman\nand\nrobin';
-				setTimeout(function() {
+				raf(function() {
 					var finalHeight = autogrow.offsetHeight;
 					assert.isTrue(finalHeight > initialHeight);
 					done();
-				}, 1000);
+				});
 			});
 
 			test('removing rows shrinks the textarea', function(done) {
 				var autogrow = fixture('basic');
 				autogrow.value = 'batman\nand\nrobin';
-				setTimeout(function() {
+				raf(function() {
 					var initialHeight = autogrow.offsetHeight;
-
 					autogrow.value = 'batman';
-					setTimeout(function() {
+					raf(function() {
 						var finalHeight = autogrow.offsetHeight;
 						assert.isTrue(finalHeight < initialHeight);
 						done();
-					}, 1000);
-				}, 1000);
+					});
+				});
 			});
 
 			test('an undefined value is the empty string', function(done) {
@@ -103,17 +104,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 				var initialHeight = autogrow.offsetHeight;
 
 				autogrow.value = 'batman\nand\nrobin';
-				setTimeout(function() {
+				raf(function() {
 					var finalHeight = autogrow.offsetHeight;
 					assert.isTrue(finalHeight > initialHeight);
 
 					autogrow.value = undefined;
-					setTimeout(function() {
+					raf(function() {
 						assert.equal(autogrow.offsetHeight, initialHeight);
 						assert.equal(autogrow.textarea.value, '');
 						done();
-					}, 1000);
-				}, 1000);
+					});
+				});
 			});
 
 			test('textarea selection works', function(done) {
