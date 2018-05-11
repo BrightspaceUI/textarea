@@ -160,6 +160,28 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 				MockInteractions.focus(input.textarea);
 			});
 		});
+
+		suite('change events', function() {
+			var input;
+			var raf = window.requestAnimationFrame;
+
+			setup(function() {
+				input = fixture('basic');
+			});
+
+			test('change events fired on host element', function(done) {
+				input.addEventListener('change', function(e) {
+					expect(e.target.value).to.equal('Batman and Robin');
+					done();
+				});
+
+				input.value = 'Batman and Robin';
+
+				raf(function() {
+					input.textarea.dispatchEvent(new Event('change', { bubbles: true, cancelable: false, composed: false }));
+				});
+			});
+		});
 	</script>
 
 	</body>
