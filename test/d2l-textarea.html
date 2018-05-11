@@ -163,6 +163,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 		suite('change events', function() {
 			var input;
+			var raf = window.requestAnimationFrame;
 
 			setup(function() {
 				input = fixture('basic');
@@ -173,10 +174,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 					expect(e.target.value).to.equal('Batman and Robin');
 					done();
 				});
-				MockInteractions.focus(input.textarea);
+
 				input.value = 'Batman and Robin';
+
 				raf(function() {
-					MockInteractions.blur(input.textarea);
+					input.textarea.dispatchEvent(new Event('change', { bubbles: true, cancelable: false, composed: false }));
 				})
 			});
 		});

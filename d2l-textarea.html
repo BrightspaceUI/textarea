@@ -396,7 +396,7 @@ Custom property | Description | Default
 		},
 
 		_handleChange: function() {
-			if (Polymer.Element && Polymer.Settings.useShadow) {
+			if (Polymer.Element) {
 				// Change events don't automatically propagate across shadow DOM boundaries
 				this.dispatchEvent(new CustomEvent(
 					'change',
