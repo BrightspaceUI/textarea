@@ -5,7 +5,7 @@
 
 [Polymer](https://www.polymer-project.org)-based web component for D2L text area.
 
-![screenshot of text input component](/textarea.gif?raw=true)
+![screenshot of d2l-textarea autogrowing](/d2l-textarea.gif?raw=true)
 
 For further information on this and other Brightspace UI components, see the docs at [ui.developers.brightspace.com](http://ui.developers.brightspace.com/).
 
@@ -39,6 +39,15 @@ Many of the same attributes from native [`<textarea>` are available](https://dev
 ```html
 <d2l-textarea disabled></d2l-textarea>
 ```
+
+These attributes may also be used:
+* `no-border` removes border styling from the text area.
+* `hover-styles` applies (square) hover styling to the text area.
+
+![screenshot of no-border and hover-styles attributes](/no-border_hover-styles.gif?raw=true)
+````html
+<d2l-textarea no-border hover-styles></d2l-textarea>
+````
 
 ## Developing, Testing and Contributing
 
