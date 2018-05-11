@@ -76,11 +76,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 				var initialHeight = autogrow.offsetHeight;
 
 				autogrow.value = 'batman\nand\nrobin';
-				flush(function() {
+				setTimeout(function() {
 					var finalHeight = autogrow.offsetHeight;
 					assert.isTrue(finalHeight > initialHeight);
 					done();
-				});
+				}, 1000);
 			});
 
 			test('removing rows shrinks the textarea', function(done) {
@@ -90,12 +90,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 					var initialHeight = autogrow.offsetHeight;
 
 					autogrow.value = 'batman';
-					flush(function() {
+					setTimeout(function() {
 						var finalHeight = autogrow.offsetHeight;
 						assert.isTrue(finalHeight < initialHeight);
 						done();
-					});
-				}, 600);
+					}, 1000);
+				}, 1000);
 			});
 
 			test('an undefined value is the empty string', function(done) {
@@ -108,12 +108,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 					assert.isTrue(finalHeight > initialHeight);
 
 					autogrow.value = undefined;
-					flush(function() {
+					setTimeout(function() {
 						assert.equal(autogrow.offsetHeight, initialHeight);
 						assert.equal(autogrow.textarea.value, '');
 						done();
-					});
-				}, 600);
+					}, 1000);
+				}, 1000);
 			});
 
 			test('textarea selection works', function(done) {
