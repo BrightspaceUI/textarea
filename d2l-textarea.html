@@ -287,18 +287,14 @@ Custom property | Description | Default
 		 * Sets the textarea's selection start.
 		 */
 		set selectionStart(value) {
-			fastdom.mutate(function() {
-				this.$.textarea.selectionStart = value;
-			}, this);
+			this.$.textarea.selectionStart = value;
 		},
 
 		/**
 		 * Sets the textarea's selection end.
 		 */
 		set selectionEnd(value) {
-			fastdom.mutate(function() {
-				this.$.textarea.selectionEnd = value;
-			}, this);
+			this.$.textarea.selectionEnd = value;
 		},
 
 		attached: function() {
@@ -352,7 +348,7 @@ Custom property | Description | Default
 			while (this.rows > 0 && _tokens.length < this.rows) {
 				_tokens.push('');
 			}
-			// Use &#160; instead &nbsp; of to allow this element to be used in XHTML.
+			// Use &#160; instead of &nbsp; to allow this element to be used in XHTML.
 			return _tokens.join('<br/>') + '&#160;';
 		},
 
