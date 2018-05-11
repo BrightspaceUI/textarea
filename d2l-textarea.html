@@ -283,18 +283,14 @@ Custom property | Description | Default
 		 * Sets the textarea's selection start.
 		 */
 		set selectionStart(value) {
-			fastdom.mutate(function() {
-				this.$.textarea.selectionStart = value;
-			}, this);
+			this.$.textarea.selectionStart = value;
 		},
 
 		/**
 		 * Sets the textarea's selection end.
 		 */
 		set selectionEnd(value) {
-			fastdom.mutate(function() {
-				this.$.textarea.selectionEnd = value;
-			}, this);
+			this.$.textarea.selectionEnd = value;
 		},
 
 		attached: function() {

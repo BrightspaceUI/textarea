@@ -71,48 +71,62 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 				assert.equal(autogrow.textarea.rows, 3, 'textarea has rows=3');
 			});
 
-			test('adding rows grows the textarea', function() {
+			test('adding rows grows the textarea', function(done) {
 				var autogrow = fixture('basic');
 				var initialHeight = autogrow.offsetHeight;
 
 				autogrow.value = 'batman\nand\nrobin';
-				var finalHeight = autogrow.offsetHeight;
-				assert.isTrue(finalHeight > initialHeight);
+				flush(function() {
+					var finalHeight = autogrow.offsetHeight;
+					assert.isTrue(finalHeight > initialHeight);
+					done();
+				});
 			});
 
-			test('removing rows shrinks the textarea', function() {
+			test('removing rows shrinks the textarea', function(done) {
 				var autogrow = fixture('basic');
 				autogrow.value = 'batman\nand\nrobin';
-				var initialHeight = autogrow.offsetHeight;
+				setTimeout(function() {
+					var initialHeight = autogrow.offsetHeight;
 
-				autogrow.value = 'batman';
-				var finalHeight = autogrow.offsetHeight;
-				assert.isTrue(finalHeight < initialHeight);
+					autogrow.value = 'batman';
+					flush(function() {
+						var finalHeight = autogrow.offsetHeight;
+						assert.isTrue(finalHeight < initialHeight);
+						done();
+					});
+				}, 600);
 			});
 
-			test('an undefined value is the empty string', function() {
+			test('an undefined value is the empty string', function(done) {
 				var autogrow = fixture('basic');
 				var initialHeight = autogrow.offsetHeight;
 
 				autogrow.value = 'batman\nand\nrobin';
-				var finalHeight = autogrow.offsetHeight;
-				assert.isTrue(finalHeight > initialHeight);
+				setTimeout(function() {
+					var finalHeight = autogrow.offsetHeight;
+					assert.isTrue(finalHeight > initialHeight);
 
-				autogrow.value = undefined;
-				assert.equal(autogrow.offsetHeight, initialHeight);
-				assert.equal(autogrow.textarea.value, '');
+					autogrow.value = undefined;
+					flush(function() {
+						assert.equal(autogrow.offsetHeight, initialHeight);
+						assert.equal(autogrow.textarea.value, '');
+						done();
+					});
+				}, 600);
 			});
 
-			test('textarea selection works', function() {
+			test('textarea selection works', function(done) {
 				var autogrow = fixture('basic');
 				var textarea = autogrow.textarea;
 				autogrow.value = 'batman\nand\nrobin';
-
-				autogrow.selectionStart = 3;
-				autogrow.selectionEnd = 5;
-
-				assert.equal(textarea.selectionStart, 3);
-				assert.equal(textarea.selectionEnd, 5);
+				flush(function() {
+					autogrow.selectionStart = 3;
+					autogrow.selectionEnd = 5;
+					assert.equal(textarea.selectionStart, 3);
+					assert.equal(textarea.selectionEnd, 5);
+					done();
+				});
 			});
 		});
 
