@@ -149,9 +149,7 @@ Custom property | Description | Default
 				maxlength$="[[maxlength]]"
 				minlength$="[[minlength]]"
 				name$="[[name]]"
-				on-blur="_handleBlur"
 				on-change="_handleChange"
-				on-focus="_handleFocus"
 				placeholder$="[[placeholder]]"
 				readonly$="[[readonly]]"
 				required$="[[required]]"
@@ -165,6 +163,10 @@ Custom property | Description | Default
 	Polymer({
 
 		is: 'd2l-textarea',
+
+		behaviors: [
+			D2L.PolymerBehaviors.FocusableBehavior
+		],
 
 		properties: {
 
