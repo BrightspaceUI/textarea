@@ -119,7 +119,8 @@ Custom property | Description | Default
 			}
 
 			:host([hover-styles]) textarea:hover,
-			:host([hover-styles]) textarea:focus {
+			:host([hover-styles]) textarea:focus,
+			:host([hover-styles]) textarea[aria-invalid='true'] {
 				border-style: solid;
 				border-radius: 0;
 				border-color: var(--d2l-color-celestine);
@@ -129,6 +130,11 @@ Custom property | Description | Default
 				box-shadow: inset 0 2px 0 0 rgba(185, 194, 208, .2);
 				transition-property: none;
 			}
+
+			:host([hover-styles]) textarea[aria-invalid='true'] {
+				@apply --d2l-input-invalid;
+			}
+
 		</style>
 
 		<!-- the mirror sizes the input/textarea so it grows with typing -->
@@ -321,6 +327,10 @@ Custom property | Description | Default
 			// the same.
 			if (textarea.value !== value) {
 				textarea.value = !(value || value === 0) ? '' : value;
+			}
+
+			if (this.ariaInvalid === 'true') {
+				this.ariaInvalid = false;
 			}
 
 			fastdom.mutate(function() {
