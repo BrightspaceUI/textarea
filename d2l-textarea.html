@@ -329,10 +329,6 @@ Custom property | Description | Default
 				textarea.value = !(value || value === 0) ? '' : value;
 			}
 
-			if (this.ariaInvalid === 'true') {
-				this.ariaInvalid = false;
-			}
-
 			fastdom.mutate(function() {
 				this.$.mirror.innerHTML = this._valueForMirror();
 			}, this);
