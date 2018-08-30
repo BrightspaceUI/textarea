@@ -315,6 +315,20 @@ Custom property | Description | Default
 			this.$.textarea.selectionEnd = value;
 		},
 
+		attached: function() {
+			Polymer.RenderStatus.afterNextRender(this, function() {
+				this.$$('textarea').addEventListener('invalid', this._handleInvalid);
+			}.bind(this));
+		},
+
+		detached: function() {
+			this.$$('textarea').removeEventListener('invalid', this._handleInvalid);
+		},
+
+		_handleInvalid: function(e) {
+			e.preventDefault();
+		},
+
 		_valueChanged: function(value) {
 			var textarea = this.textarea;
 			if (!textarea) {
