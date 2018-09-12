@@ -1,3 +1,5 @@
+> Deprecated: use [BrightspaceUI/inputs](https://github.com/BrightspaceUI/inputs) `d2l-input-textarea` web component instead.
+
 # d2l-textarea
 [![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://www.webcomponents.org/element/BrightspaceUI/textarea)
 [![Bower version][bower-image]][bower-url]
